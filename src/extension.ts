@@ -17,7 +17,10 @@ function getWorkspaceRoot(): string | undefined {
  */
 async function getStagedDiff(cwd: string): Promise<string> {
   try {
-    const { stdout } = await execAsync("git diff --staged", { cwd });
+    const { stdout, stderr } = await execAsync("git diff --staged", { cwd });
+    if (!stdout || stderr) {
+      throw new Error("No staged changes found.");
+    }
     return stdout;
   } catch {
     throw new Error("No staged changes found.");
